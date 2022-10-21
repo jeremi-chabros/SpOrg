@@ -1,25 +1,19 @@
 clearvars; clc;
-lkp_name = 'lookup_final';
+lkp_name = 'lookup_all';
 load(lkp_name);
 
 files = S;
 
-method = 'thr3p0';
+method = 'thr3p5';
 min_freq_Hz = 1;
-% filelist = {'210514_Const1', '201029_Const3', '201029_Const2', '201029_Const1'};
-filts = dir('/Users/jjc/mea/SpOrg/SpOrg_Spikes/*.mat');
-for i = 1:length(filts)
-    filelist{i} = filts(i).name(1:end-11);
-end
-% filelist = {filelist.name(1:11)};
-% suffix = '_sporg_e.mat';
+filelist = {'190830_slice1','190830_slice2', '210514_Const1', '201029_Const3', '201029_Const2', '201029_Const1'};
+suffix = '_sporg_e.mat';
 % lower_threshold = -20;
 
 % Need to get first baseline recs
-% T = struct2table(files); % convert the struct array to a table
-% sortedT = sortrows(T, 'order'); % sort the table by 'order'
-% files = table2struct(sortedT); % change it back to struct array if necessary
-files = table2struct(files);
+T = struct2table(files); % convert the struct array to a table
+sortedT = sortrows(T, 'order'); % sort the table by 'order'
+files = table2struct(sortedT); % change it back to struct array if necessary
 
 chan_list = [47;48;46;45;38;37;28;36;27;17;26;16;35;25;15;14;24;34;13;23;12;22;33;21;32;31;44;43;41;42;52;51;53;54;61;62;71;63;72;82;73;83;64;74;84;85;75;65;86;76;87;77;66;78;67;68;55;56;58;57];
 %%
@@ -31,9 +25,8 @@ for n = 1:length(files)
 
         load(filename);
         load([filename(1:end-4) '.mat_spikes.mat']);
-        sporg = files(n).sporg;
-%         ordinal = find(strcmp(filelist,filename(1:13)));
-%         load([filelist{ordinal} suffix]);
+        ordinal = find(strcmp(filelist,filename(1:13)));
+        load([filelist{ordinal} suffix]);
 
 %         if ismember(n, 8:14)
 %             thr_id{n-7} = spikeDetectionResult.params.mad; % the value itself is +ve
@@ -72,15 +65,17 @@ for n = 1:length(files)
 
             indx = sub2ind([8,8],xpos,ypos);
 
-            if ismember(chan, sporg)
+            if ~ismember(chan, stim) && ismember(chan, electrode_id)
 
                 [stim_times, stim_interval] = findStims(filtered_data(:,i));
                 sps = spikeWaveforms{i}.(method);
                 sps = sps(:,25);
 
-                if files(n).order == 1
-                    lower_threshold = -spikeDetectionResult.params.mad(i);
-                end
+                %             if strcmp(S(n).tag, 'baseline') || strcmp(S(n).tag, 'stim')
+                %                 lower_threshold = -spikeDetectionResult.params.mad(i);
+                %             else
+                %                 lower_threshold = -20;
+                %             end
 
                 lower_threshold = -thr_id{files(n).const}(i);
 
@@ -105,12 +100,12 @@ for n = 1:length(files)
         end
 
         num_active = sum(spike_freq>min_freq_Hz);
-        num_active = length(sporg);
+        num_active = length(electrode_id);
         files(n).no_active_el = num_active;
         files(n).spike_freq = sum(spike_freq)/(60-length(locs));
         files(n).spike_freq = spike_freq;
 %         files(n).spike_freq_alt = sum(spike_freq)/num_active;
-        files(n).spike_freq_alt = sum(spike_freq)/length(sporg);
+        files(n).spike_freq_alt = sum(spike_freq)/length(electrode_id);
         files(n).duration_s = spikeDetectionResult.params.duration;
 
 

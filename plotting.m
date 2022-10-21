@@ -1,7 +1,7 @@
 clearvars; clc;
-lkp_name = 'lookup';
+lkp_name = 'lookup_final.mat';
 load(lkp_name);
-
+spkmet = 'mea';
 chan_list = [47;48;46;45;38;37;28;36;27;17;26;16;35;25;15;14;24;34;13;23;12;22;33;21;32;31;44;43;41;42;52;51;53;54;61;62;71;63;72;82;73;83;64;74;84;85;75;65;86;76;87;77;66;78;67;68;55;56;58;57];
 %%
 for n = 1:length(files)
@@ -9,6 +9,7 @@ for n = 1:length(files)
     close all
     filename = files(n).name;
     load(filename);
+
     load([filename(1:end-4) '.mat_spikes.mat']);
     
     stim = files(n).stim;
@@ -26,6 +27,7 @@ for n = 1:length(files)
     % Plot grid
     clc
     stim = files(n).stim;
+    sporg = files(n).sporg;
     figure
     
     for i = 1:length(channels)
@@ -39,14 +41,14 @@ for n = 1:length(files)
         subplot(8,8,indx)
         plot(filtered_data(:,i), 'color','k')
         
-        if ~ismember(chan, stim)
+        if ismember(chan, sporg)
             
             [stim_times, ~] = findStims(filtered_data(:,i));
-            sps = spikeWaveforms{i}.('thr3p0');
+            sps = spikeWaveforms{i}.(spkmet);
             sps = sps(:,25);
-            G = logical(and(sps<-20,sps>-100));
+            G = logical(and(sps <- 0,sps>-100));
             
-            spike_times = spikeTimes{i}.('thr3p0');
+            spike_times = spikeTimes{i}.(spkmet);
             spike_times = round(spike_times*25000);
             
             sp_times = spike_times(G);

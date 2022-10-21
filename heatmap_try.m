@@ -1,10 +1,10 @@
 clearvars; clc;
-load('lookup.mat');
+load('lookup_final.mat');
 
 f = dir('/Users/jjc/mea/SpOrg/SpOrg_Spikes/*20*.mat');
-for n = 1:length(f)
+for n = 1:length(files)
     close all
-    load(f(n).name);
+    load(['/Users/jjc/mea/SpOrg/SpOrg_Spikes/' files(n).name '_spikes.mat']);
 
     %%
     method = 'thr3p5';

@@ -1,24 +1,24 @@
 clearvars; clc;
 
 % load('lookup_corrected1.mat');
-load('lookup_corrected_thr3p5_2.mat');
+load('lookup_fthr3p5_sporg_only.mat');
 S = files;
-tags_ = {S.tag};
+tags_ = {S.order};
 
 
-sgrp = [strcmp(tags_,'baseline')];
+sgrp = [strcmp(num2str(tags_), "1")];
 val_b = ([S(sgrp).spike_freq]);
-val_b = rmoutliers([S(sgrp).spike_freq]);
+% val_b = rmoutliers([S(sgrp).spike_freq]);
 
-sgrp = [strcmp(tags_,'stim')];
-val_s = rmoutliers([S(sgrp).spike_freq]);
+sgrp = [strcmp(tags_,2)];
+% val_s = rmoutliers([S(sgrp).spike_freq]);
 % val_s = val_s(val_s>3);
 
-sgrp = [strcmp(tags_,'ttx')];
-val_t = rmoutliers([S(sgrp).spike_freq]);
-
-sgrp = [strcmp(tags_,'axotomy')];
-val_a = rmoutliers([S(sgrp).spike_freq]);
+% sgrp = [strcmp(tags_,'ttx')];
+% val_t = rmoutliers([S(sgrp).spike_freq]);
+% 
+% sgrp = [strcmp(tags_,'axotomy')];
+% val_a = rmoutliers([S(sgrp).spike_freq]);
 
 
 
@@ -26,9 +26,9 @@ notBoxPlot(val_b, 1);
 hold on
 notBoxPlot(val_s, 2);
 hold on
-notBoxPlot(val_t, 3);
-hold on
-notBoxPlot(val_a, 4);
+% notBoxPlot(val_t, 3);
+% hold on
+% notBoxPlot(val_a, 4);
 
 h = gcf;
 H = get(h);

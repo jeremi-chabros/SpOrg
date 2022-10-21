@@ -1,7 +1,7 @@
 clearvars; clc;
 
 % load('lookup_corrected1.mat');
-load('lookup_corrected_thr3p0_2.mat');
+load('lookupthr3p0_sporg_only.mat');
 S = files;
 tags_ = {S.tag};
 

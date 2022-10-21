@@ -212,7 +212,7 @@ H(2)=text(mean(x(:)),starY,stars,...
     'Tag','sigstar_stars');
 Y=ylim;
 if Y(2)<starY
-    ylim([Y(1),starY+myRange(Y)*0.05])
+    ylim([Y(1),starY+myRange(Y)*0.1])
 end
 end %close makeSignificanceBar
 function Y=findMinY(x)
